@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Cleaning Estimate in Tucson | White Glove</title>
+<meta name="description" content="Request a personalized cleaning estimate for your Tucson home, rental, or move from White Glove Professional Cleaning.">
+<link rel="canonical" href="https://whitegloveprofessionalcleaning.com/request-estimate/">
+<meta property="og:title" content="Request a Cleaning Estimate in Tucson | White Glove">
+<meta property="og:description" content="Request a personalized cleaning estimate for your Tucson home, rental, or move from White Glove Professional Cleaning.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="b1">WHITE GLOVE</span><span class="b2">Professional Cleaning</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/residential-cleaning/">Residential</a>
+      <a href="/move-in-move-out-cleaning/">Move Cleaning</a>
+      <a href="/faqs/">FAQs</a>
+      <a href="/contact/">Contact</a>
+      <a class="btn" href="/request-estimate/">Request an Estimate</a>
+    </nav>
+  </div>
+</header>
+<main>
+<section class="hero" style="padding-bottom:40px">
+  <div class="wrap">
+    <p class="eyebrow">Request an Estimate</p>
+    <div class="hero-rule"></div>
+    <h1>Tell us about your space.</h1>
+    <p class="lede">Complete the form below, and we will review your requested service, property details, and location. Additional information, photographs, or an assessment may be needed before final pricing is provided.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <form data-ajax action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+      <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <fieldset>
+        <legend>Contact information</legend>
+        <div class="field-row">
+          <div><label for="name">Full name</label><input type="text" id="name" name="name" required autocomplete="name"></div>
+          <div><label for="email">Email address</label><input type="email" id="email" name="email" required autocomplete="email"></div>
+        </div>
+        <div class="field-row">
+          <div><label for="phone">Phone number</label><input type="tel" id="phone" name="phone" autocomplete="tel"></div>
+          <div><label for="contact-method">Preferred contact method</label>
+            <select id="contact-method" name="preferred_contact"><option>Email</option><option>Phone</option><option>Text</option></select></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Property information</legend>
+        <div class="field-row">
+          <div><label for="address">Property address <span class="opt">(street and city)</span></label><input type="text" id="address" name="property_address"></div>
+          <div><label for="zip">ZIP code</label><input type="text" id="zip" name="zip" inputmode="numeric" required></div>
+        </div>
+        <div class="field-row">
+          <div><label for="ptype">Property type</label>
+            <select id="ptype" name="property_type">
+              <option>House</option><option>Apartment</option><option>Condominium</option><option>Townhome</option><option>Vacation rental</option><option>Professional office</option><option>Retail or commercial space</option><option>Other</option>
+            </select></div>
+          <div><label for="sqft">Approximate square footage</label><input type="text" id="sqft" name="square_footage" inputmode="numeric"></div>
+        </div>
+        <div class="field-row">
+          <div><label for="beds">Number of bedrooms</label><input type="text" id="beds" name="bedrooms" inputmode="numeric"></div>
+          <div><label for="baths">Number of bathrooms</label><input type="text" id="baths" name="bathrooms" inputmode="numeric"></div>
+        </div>
+        <div class="field-row">
+          <div><label for="occupied">Is the property occupied?</label>
+            <select id="occupied" name="occupied"><option>Yes</option><option>No</option><option>Partially / moving</option></select></div>
+          <div><label for="pets">Are there pets?</label>
+            <select id="pets" name="pets"><option>No</option><option>Yes — details below</option></select></div>
+        </div>
+        <label for="access">Parking or access limitations <span class="opt">(do not include door or alarm codes)</span></label>
+        <input type="text" id="access" name="access_notes">
+      </fieldset>
+
+      <fieldset>
+        <legend>Requested service</legend>
+        <div class="field-row">
+          <div><label for="service">Service</label>
+            <select id="service" name="service">
+              <option>Recurring residential cleaning</option>
+              <option>One-time residential cleaning</option>
+              <option>Deep cleaning</option>
+              <option>Move-in cleaning</option>
+              <option>Move-out cleaning</option>
+              <option>Vacation rental turnover</option>
+              <option>Commercial office cleaning</option>
+              <option>Other</option>
+            </select></div>
+          <div><label for="frequency">Requested frequency</label>
+            <select id="frequency" name="frequency">
+              <option>One time</option><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Multiple times per week</option><option>Not sure</option>
+            </select></div>
+        </div>
+        <div class="field-row">
+          <div><label for="start">Preferred start date</label><input type="date" id="start" name="preferred_start"></div>
+          <div><label for="flex">Is the date flexible?</label>
+            <select id="flex" name="date_flexible"><option>Yes</option><option>No — firm deadline</option></select></div>
+        </div>
+        <label for="lastclean">When was the property last professionally cleaned?</label>
+        <select id="lastclean" name="last_cleaned">
+          <option>Within the last two weeks</option><option>Within the last month</option><option>Within the last three months</option><option>More than three months ago</option><option>Never</option><option>Not sure</option>
+        </select>
+      </fieldset>
+
+      <fieldset>
+        <legend>Property condition</legend>
+        <p style="font-size:.9rem">Do any of the following apply?</p>
+        <div class="check-grid">
+          <label><input type="checkbox" name="condition[]" value="Significant pet hair"> Significant pet hair</label>
+          <label><input type="checkbox" name="condition[]" value="Heavy grease buildup"> Heavy grease buildup</label>
+          <label><input type="checkbox" name="condition[]" value="Heavy soap or mineral buildup"> Heavy soap or mineral buildup</label>
+          <label><input type="checkbox" name="condition[]" value="Excessive clutter"> Excessive clutter</label>
+          <label><input type="checkbox" name="condition[]" value="Smoke odor"> Smoke odor</label>
+          <label><input type="checkbox" name="condition[]" value="Construction dust"> Construction dust</label>
+          <label><input type="checkbox" data-hazard name="condition[]" value="Pest activity"> Pest activity</label>
+          <label><input type="checkbox" data-hazard name="condition[]" value="Mold or suspected mold"> Mold or suspected mold</label>
+          <label><input type="checkbox" data-hazard name="condition[]" value="Bodily fluids"> Bodily fluids</label>
+          <label><input type="checkbox" data-hazard name="condition[]" value="Hazardous materials"> Hazardous materials</label>
+          <label><input type="checkbox" name="condition[]" value="None of the above"> None of the above</label>
+        </div>
+        <div class="hazard-warning notice" role="alert">
+          <strong>Additional assessment is required.</strong> White Glove Professional Cleaning may not be able to accept the service request. We will review the details you provide and respond with the appropriate next step.
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Add-ons <span style="font-family:Mulish;font-size:.8rem;color:var(--slate)">(available by quotation)</span></legend>
+        <div class="check-grid">
+          <label><input type="checkbox" name="addons[]" value="Interior refrigerator"> Interior refrigerator</label>
+          <label><input type="checkbox" name="addons[]" value="Interior oven"> Interior oven</label>
+          <label><input type="checkbox" name="addons[]" value="Interior cabinets"> Interior cabinets</label>
+          <label><input type="checkbox" name="addons[]" value="Interior windows"> Interior windows</label>
+          <label><input type="checkbox" name="addons[]" value="Baseboards"> Baseboards</label>
+          <label><input type="checkbox" name="addons[]" value="Blinds"> Blinds</label>
+          <label><input type="checkbox" name="addons[]" value="Linen changes"> Linen changes</label>
+          <label><input type="checkbox" name="addons[]" value="Laundry"> Laundry</label>
+          <label><input type="checkbox" name="addons[]" value="Organization assistance"> Organization assistance</label>
+          <label><input type="checkbox" name="addons[]" value="Other"> Other</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>About the property</legend>
+        <label for="notes">What would you like us to know about the property?</label>
+        <textarea id="notes" name="notes"></textarea>
+        <p class="mt-1" style="font-size:.82rem">Please do not include identification documents, financial information, medical or patient information, access codes, or alarm codes in this form.</p>
+      </fieldset>
+
+      <div class="consent">
+        <label><input type="checkbox" name="consent" value="confirmed" required> I confirm that the information provided is accurate to the best of my knowledge and understand that submitting this form does not confirm an appointment or final price.</label>
+        <label><input type="checkbox" name="marketing_opt_in" value="yes"> <span class="opt">Optional: I would like to receive occasional service updates by email.</span></label>
+      </div>
+
+      <button class="btn mt-3" type="submit">Submit Estimate Request</button>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <a class="brand" href="/"><span class="b1">WHITE GLOVE</span><span class="b2">Professional Cleaning</span></a>
+      <p>Professional cleaning for Tucson homes and workplaces.</p>
+      <p class="mt-1">Serving Tucson and select surrounding communities.</p>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="/residential-cleaning/">Residential Cleaning</a></li>
+        <li><a href="/residential-cleaning/#deep">Deep Cleaning</a></li>
+        <li><a href="/move-in-move-out-cleaning/">Move Cleaning</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="/faqs/">FAQs</a></li>
+        <li><a href="/request-estimate/">Request an Estimate</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy Policy</a></li>
+        <li><a href="/terms/">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="legal-line">© <span id="yr"></span> White Glove Professional Cleaning. All rights reserved.</p>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+<script src="/assets/site.js"></script>
+</body>
+</html>
