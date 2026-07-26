@@ -99,7 +99,7 @@ const PRICING = {
     ]}
   ],
 
-  estimateUrl: '/pricing/'
+  estimateUrl: '/contact/'
 };
 
 /* =====================================================================
