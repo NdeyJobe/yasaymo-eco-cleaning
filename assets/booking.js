@@ -133,7 +133,14 @@
   function drawReview() {
     var r = document.getElementById('review');
     if (!r) return;
-    if (!quote) { r.innerHTML = '<h4>Review</h4><p style="font-size:.89rem">Build your estimate above, then choose a date to complete your request.</p>'; return; }
+    if (!quote) {
+      r.innerHTML = '<h4>Review</h4><p style="font-size:.89rem">Build your estimate above, then choose a date to complete your request. ' +
+        'Homes over 4,000 sq ft and properties needing an assessment are quoted after a walkthrough — ' +
+        '<a href="/contact/">contact us</a> and we will arrange one.</p>';
+      var btn0 = document.getElementById('bk-submit');
+      if (btn0) btn0.disabled = true;
+      return;
+    }
 
     var rows =
       (quote.promoCode ? row('Promotion code', quote.promoCode) : '') +
@@ -237,6 +244,11 @@
   }
 
   document.addEventListener('quote:ready', function (e) { quote = e.detail; drawReview(); });
+
+  document.addEventListener('quote:invalid', function () {
+    quote = null;
+    drawReview();
+  });
 
   render();
 })();

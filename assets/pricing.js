@@ -402,7 +402,8 @@ const PRICING = {
       '<div class="sum-deposit">Estimated deposit today: <strong>' + money(r.firstTotal * 0.5) + '</strong> (50% of the first visit, due after we send your invoice).</div>' +
       '<p class="sum-note">Pricing shown is an estimate. Final pricing is confirmed after reviewing your request.' +
         (r.promo && r.promo.disclaimer ? ' ' + r.promo.disclaimer : '') + '</p>' +
-      '<button type="button" class="btn sum-cta" id="cta">Continue to Booking</button></div>';
+      '<button type="button" class="btn sum-cta" id="cta">' +
+        (bookingOpen ? 'Go to Booking' : 'Continue to Booking') + '</button></div>';
   }
   function sumRow(k, v) { return '<div class="sum-row"><span>' + k + '</span><span>' + v + '</span></div>'; }
   function lineRow(k, v, cls) { return '<div class="sum-line ' + (cls || '') + '"><span>' + k + '</span><span>' + v + '</span></div>'; }
@@ -418,24 +419,25 @@ const PRICING = {
       bar.innerHTML = '<div class="bar-in"><span class="bar-total"><small>' +
         (r.recurring ? 'First visit' : 'Estimated total') + '</small><strong>' + money(r.firstTotal) + '</strong>' +
         (r.recurring ? '<em>then ' + money(r.recurTotal) + '/visit</em>' : '') +
-        '</span><button type="button" class="btn" id="cta-bar">Continue to Booking</button></div>';
+        '</span><button type="button" class="btn" id="cta-bar">' +
+        (bookingOpen ? 'Go to Booking' : 'Continue to Booking') + '</button></div>';
     }
     var go = function () { submit(r); };
     var a = document.getElementById('cta');     if (a) a.onclick = go;
     var b = document.getElementById('cta-bar'); if (b) b.onclick = go;
+
+    pushQuote(r);   // keeps the booking review in sync after it is opened
   }
 
-  function submit(r) {
-    if (r.blocked) {
-      var el = document.getElementById('custom-request');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
+  var bookingOpen = false;
+
+  /* Build the quote object handed to the booking module */
+  function buildQuote(r) {
     var size = find(PRICING.sizes, state.size);
     var svc  = find(PRICING.services, r.svc);
     var cond = find(PRICING.condition, state.condition);
     var pet  = find(PRICING.pets, state.pets);
-    window.YASAYMO_QUOTE = {
+    return {
       service: svc.label,
       size: size.label,
       bedrooms: state.bedrooms,
@@ -452,6 +454,32 @@ const PRICING = {
       promoAmount: r.promo ? r.promo.amount : 0,
       deposit: r.firstTotal * (window.SITE ? SITE.booking.depositPercent : 0.5)
     };
+  }
+
+  /* Keep the booking panel in sync with the calculator once it is open */
+  function pushQuote(r) {
+    if (!bookingOpen) return;
+    if (r.blocked) {
+      window.YASAYMO_QUOTE = null;
+      document.dispatchEvent(new CustomEvent('quote:invalid'));
+      var bl = document.getElementById('booking');
+      if (bl) bl.classList.add('locked');
+      return;
+    }
+    var bl2 = document.getElementById('booking');
+    if (bl2) bl2.classList.remove('locked');
+    window.YASAYMO_QUOTE = buildQuote(r);
+    document.dispatchEvent(new CustomEvent('quote:ready', { detail: window.YASAYMO_QUOTE }));
+  }
+
+  function submit(r) {
+    if (r.blocked) {
+      var el = document.getElementById('custom-request');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    bookingOpen = true;
+    window.YASAYMO_QUOTE = buildQuote(r);
     document.dispatchEvent(new CustomEvent('quote:ready', { detail: window.YASAYMO_QUOTE }));
     var b = document.getElementById('booking');
     if (b) { b.classList.remove('locked'); b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
