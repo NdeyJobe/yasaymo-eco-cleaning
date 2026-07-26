@@ -234,7 +234,7 @@ const PRICING = {
       html += '<div class="addon-group"><h4>' + g.group + '</h4><div class="addon-list">';
       g.items.forEach(function (a) {
         var on = !!state.addons[a.id];
-        var price = money0(a.price) + (a.per === 'fullbath' ? ' <span class="per">per full bathroom</span>' : a.qty ? ' <span class="per">each</span>' : '');
+        var price = money0(a.price) + (a.per === 'fullbath' ? ' <span class="per">per full bathroom</span>' : a.qty ? ' <span class="per">per ' + a.unit + '</span>' : '');
         html += '<div class="addon' + (on ? ' on' : '') + '">' +
           '<label class="addon-main"><input type="checkbox" data-addon="' + a.id + '"' + (on ? ' checked' : '') + '>' +
           '<span class="addon-label">' + a.label + '</span><span class="addon-price">' + price + '</span></label>' +
