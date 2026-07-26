@@ -1,64 +1,65 @@
-# White Glove Professional Cleaning — Website
+# Yasaymo Eco Cleaning — Website
 
-Static multi-page website for White Glove Professional Cleaning (Tucson, AZ).
-Built for GitHub Pages with a custom domain — same workflow as jobebiolab.com.
+Static site (HTML/CSS/JS) for GitHub Pages. No build step.
+**Professional Cleaning. Thoughtful Product Choices.** — Tucson, Arizona.
 
 ## Structure
-- `index.html` — Home
-- `/residential-cleaning/` — Residential (recurring, deep, one-time + checklists)
-- `/move-in-move-out-cleaning/` — Move cleaning
-- `/request-estimate/` — Estimate form (primary conversion page)
-- `/faqs/` — FAQ accordion
-- `/contact/` — Contact form
-- `/privacy/`, `/terms/` — Legal pages
-- `/assets/styles.css`, `/assets/site.js` — shared styles & behavior
+```
+index.html                       Home
+/residential-cleaning/           Standard residential
+/deep-cleaning/                  Deep cleaning
+/move-in-move-out-cleaning/      Move cleaning
+/vacation-rental-cleaning/       Vacation rental turnovers
+/pricing/                        Pricing calculator + booking  ← primary conversion page
+/commercial-cleaning/            Commercial
+/medical-office-cleaning/        Medical & professional offices
+/commercial-estimate/            Commercial estimate form
+/about/  /faqs/  /contact/       Company
+/booking-success/                Post-booking confirmation
+/privacy/  /terms/               Legal
+/assets/config.js                Brand, contact, Formspree, booking + deposit rules
+/assets/pricing.js               ALL residential pricing (single PRICING object)
+/assets/booking.js               Calendar, time slots, review, submit
+/assets/site.js                  Nav, dropdowns, reveal, generic forms, success page
+/assets/styles.css               Design tokens + all styles
+sitemap.xml  robots.txt  CNAME
+```
 
-Design tokens: ivory #FAF7F1 ground, charcoal #26231F type, bronze #A17C46 accent,
-sand #E9E2D4 borders. Type: Marcellus (display) + Mulish (body), via Google Fonts.
+## Where to change things
+| Change | File |
+|---|---|
+| Any price, discount, minimum, room allowance, add-on | `assets/pricing.js` → `PRICING` |
+| Brand name, tagline, domain, Formspree IDs, email subjects | `assets/config.js` → `SITE` |
+| Booking rules: notice, advance window, time slots, deposit % | `assets/config.js` → `SITE.booking` |
+| **Block a date you've already booked** | `assets/config.js` → `SITE.booking.blockedDates` e.g. `['2026-08-14']` |
+| Colours / type | `assets/styles.css` → `:root` |
 
-## Deploy (GitHub Pages)
-1. Create repo `white-glove-professional-cleaning` under your GitHub account.
-2. Push all files to `main`.
-3. Settings → Pages → Deploy from branch → `main` / root.
-4. Add custom domain when purchased; site uses root-relative links (`/assets/...`),
-   which require a custom domain or user/organization root site — they will NOT
-   work at `username.github.io/repo-name/` subpaths.
+## Booking — important limitation
+This is a static site with no database, so it **cannot know which dates are already taken**.
+The calendar enforces: 48-hour minimum notice, 90-day maximum advance, America/Phoenix time,
+and any dates listed in `blockedDates`. **After you accept a booking, add that date to
+`blockedDates` and commit.** Until then the date stays selectable. Because bookings are
+requests pending deposit, a duplicate request is resolvable when you review it.
 
-## Connect the forms (required before launch)
-1. Create a NEW Formspree form (do not reuse the Jobe Biolab endpoint) pointed
-   at the business email.
-2. Replace `YOUR_FORM_ID` in `request-estimate/index.html` and
-   `contact/index.html` with the real endpoint.
-3. Submit a test on both forms. Until replaced, the form shows a "not connected"
-   message instead of silently failing.
+## Domain change (pending)
+Canonical URLs, `og:url`, `sitemap.xml`, `robots.txt` and `CNAME` currently point to
+`whitegloveprofessionalcleaning.com`. When the new domain is connected:
+1. Update `SITE.domain` in `assets/config.js`
+2. Find-and-replace the old domain across the repo (it appears in each page `<head>`, sitemap, robots, CNAME)
+3. Point DNS at GitHub Pages, set the custom domain in Settings → Pages, re-tick Enforce HTTPS
+4. On the old domain, replace its DNS records with a single 301 URL Redirect to the new one
 
-## LAUNCH CHECKLIST — the go-live gate
-Do not remove the password/development state until every item is resolved:
-- [ ] Business phone number + email added to Contact page notice
-- [ ] Final domain purchased; canonical URLs updated in every page `<head>`
-      (currently set to whitegloveprofessionalcleaning.com — verify availability)
-- [ ] Formspree endpoints connected and tested
-- [ ] Insurance bound (GL + bond; workers' comp per classification decision)
-      — only then may the site add the words "insured" or "bonded"
-- [ ] Worker classification decision documented (lawyer)
-- [ ] Cancellation & payment policies finalized (update FAQs + Terms)
-- [ ] Privacy/Terms "Last updated" dates set; policies reviewed
-- [ ] Service areas confirmed as actually serviceable
-- [ ] Logo files added if replacing the text treatment
-- [ ] Founder section content (optional) — About page not yet built; add later
-- [ ] Google Business Profile created AFTER launch details are final
+## Before public launch
+- [ ] Business email/phone published on Contact (currently form-only)
+- [ ] Formspree recipient switched from the current inbox to a Yasaymo address
+- [ ] Privacy / Terms "Last updated" dates set and reviewed
+- [ ] Insurance bound before the first job (site makes no insured/bonded claim — do not add one until true)
+- [ ] Worker classification decision documented
+- [ ] Google Business Profile created under the final name and verified
+- [ ] Real photography replacing the current text-only layout
 
-## Deliberately NOT included at v1 (add when operational)
-- Commercial / Medical-office / Vacation-rental pages (drafted in the original
-  brief; publish only when insurance, training, and capacity exist)
-- Pricing page (no prices until finalized — never invent "starting at" prices)
-- Reviews section (only real, permissioned reviews)
-- Careers page
-- Photo upload on forms (omitted until secure handling is established)
-
-## Compliance rules baked into the copy (do not undo)
-- No claims of licensed / bonded / insured / certified / background-checked
-- No testimonials, ratings, customer counts, or years-of-experience claims
-- No pricing, no artificial urgency, no satisfaction-guarantee language
-- Exclusions notice on service pages; PHI/sensitive-info warnings on both forms
-- Hazard conditions on the estimate form trigger an assessment-required notice
+## Claims discipline (do not undo)
+No "organic / plant-based / natural / non-toxic / chemical-free / fragrance-free / hypoallergenic /
+biodegradable / certified green / hospital-grade" absolutes. No testimonials, ratings, or
+guarantees. No published commercial pricing. Residential prices are labelled estimates
+everywhere. Booking language stays "request" until the deposit is paid.
