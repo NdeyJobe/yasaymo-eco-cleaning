@@ -50,3 +50,29 @@ const SITE = {
     successUrl: '/booking-success/'
   }
 };
+
+/* =====================================================================
+   PROMOTIONS
+   ---------------------------------------------------------------------
+   Codes are matched case-insensitively and trimmed of whitespace.
+   discount        percentage off the cleaning (base + extra-room charges)
+   maximumDiscount hard cap in dollars
+   firstVisitOnly  applies to the first visit only; never stacks with the
+                   recurring discount, which begins at the second visit
+   eligibleServices service ids from PRICING.services
+   active          set false to switch the code off site-wide
+   ===================================================================== */
+
+const PROMOTIONS = {
+  UARIZONA10: {
+    name: 'University of Arizona Employee Offer',
+    shortName: 'University of Arizona Employees',
+    discount: 10,
+    maximumDiscount: 50,
+    firstVisitOnly: true,
+    eligibleServices: ['standard', 'deep', 'movein', 'moveout'],
+    appliedMessage: '10% off your first residential cleaning has been applied.',
+    disclaimer: 'This promotion is intended for current University of Arizona employees and may be modified or discontinued at any time.',
+    active: true
+  }
+};

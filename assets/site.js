@@ -73,6 +73,9 @@
   if (ok) {
     var p = new URLSearchParams(window.location.search);
     var rows = [
+      ['Promotion code', p.get('promo')],
+      ['Promotion', p.get('promoName')],
+      ['Promotion discount', p.get('promoAmount') ? '−$' + p.get('promoAmount') : null],
       ['Requested service', p.get('service')],
       ['Requested date', p.get('date')],
       ['Preferred arrival', p.get('time')],
