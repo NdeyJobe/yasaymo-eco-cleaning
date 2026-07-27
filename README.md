@@ -43,7 +43,7 @@ requests pending deposit, a duplicate request is resolvable when you review it.
 
 ## Domain change (pending)
 Canonical URLs, `og:url`, `sitemap.xml`, `robots.txt` and `CNAME` currently point to
-`whitegloveprofessionalcleaning.com`. When the new domain is connected:
+`yasaymo.com`. When the new domain is connected:
 1. Update `SITE.domain` in `assets/config.js`
 2. Find-and-replace the old domain across the repo (it appears in each page `<head>`, sitemap, robots, CNAME)
 3. Point DNS at GitHub Pages, set the custom domain in Settings → Pages, re-tick Enforce HTTPS

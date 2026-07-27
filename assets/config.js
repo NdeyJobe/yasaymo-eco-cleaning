@@ -15,7 +15,7 @@ const SITE = {
   supportingLine: 'Reliable residential and commercial cleaning using carefully selected eco-conscious products.',
 
   /* ---- Domain (update after the new domain is connected) ---- */
-  domain: 'https://whitegloveprofessionalcleaning.com',
+  domain: 'https://yasaymo.com',
 
   /* ---- Contact ---- */
   city: 'Tucson, Arizona',
