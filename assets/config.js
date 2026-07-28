@@ -15,14 +15,10 @@ const SITE = {
   supportingLine: 'Reliable residential and commercial cleaning using carefully selected eco-conscious products.',
 
   /* ---- Domain (update after the new domain is connected) ---- */
-  domain: 'https://yasaymo.com',
+  domain: 'https://whitegloveprofessionalcleaning.com',
 
   /* ---- Contact ---- */
   city: 'Tucson, Arizona',
-  phone: '(520) 261-6332',
-  phoneLink: 'tel:+15202616332',
-  phone: '(520) 314-6656',
-  phoneTel: '+15203146656',
   serviceAreas: ['Tucson', 'Oro Valley', 'Catalina Foothills', 'Marana',
                  'Central Tucson', 'East Tucson', 'Rita Ranch', 'Vail'],
 
@@ -52,31 +48,5 @@ const SITE = {
     depositPercent: 0.50,
     depositDueHours: 24,
     successUrl: '/booking-success/'
-  }
-};
-
-/* =====================================================================
-   PROMOTIONS
-   ---------------------------------------------------------------------
-   Codes are matched case-insensitively and trimmed of whitespace.
-   discount        percentage off the cleaning (base + extra-room charges)
-   maximumDiscount hard cap in dollars
-   firstVisitOnly  applies to the first visit only; never stacks with the
-                   recurring discount, which begins at the second visit
-   eligibleServices service ids from PRICING.services
-   active          set false to switch the code off site-wide
-   ===================================================================== */
-
-const PROMOTIONS = {
-  UARIZONA10: {
-    name: 'University of Arizona Employee Offer',
-    shortName: 'University of Arizona Employees',
-    discount: 10,
-    maximumDiscount: 50,
-    firstVisitOnly: true,
-    eligibleServices: ['standard', 'deep', 'movein', 'moveout'],
-    appliedMessage: '10% off your first residential cleaning has been applied.',
-    disclaimer: 'This promotion is intended for current University of Arizona employees and may be modified or discontinued at any time.',
-    active: true
   }
 };
