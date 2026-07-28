@@ -19,6 +19,10 @@ const SITE = {
 
   /* ---- Contact ---- */
   city: 'Tucson, Arizona',
+  phone: '(520) 261-6332',
+  phoneLink: 'tel:+15202616332',
+  phone: '(520) 314-6656',
+  phoneTel: '+15203146656',
   serviceAreas: ['Tucson', 'Oro Valley', 'Catalina Foothills', 'Marana',
                  'Central Tucson', 'East Tucson', 'Rita Ranch', 'Vail'],
 

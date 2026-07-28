@@ -63,7 +63,7 @@
                 '<div><label for="bk-email">Email</label><input type="email" id="bk-email" name="email" required autocomplete="email"></div>' +
               '</div>' +
               '<div class="field-row">' +
-                '<div><label for="bk-phone">Phone</label><input type="tel" id="bk-phone" name="phone" autocomplete="tel"></div>' +
+                '<div><label for="bk-phone">Phone</label><input type="tel" id="bk-phone" name="phone" required autocomplete="tel"></div>' +
                 '<div><label for="bk-contact">Preferred contact</label><select id="bk-contact" name="preferred_contact"><option>Email</option><option>Phone</option><option>Text</option></select></div>' +
               '</div>' +
               '<label for="bk-address">Service address</label><input type="text" id="bk-address" name="service_address" required>' +
@@ -161,7 +161,7 @@
       '<div class="r-row"><span>Estimated deposit (50%)</span><span>' + money(quote.deposit) + '</span></div>';
 
     r.innerHTML = '<h4>Review your request</h4>' + rows + totals +
-      '<p class="calc-hint">Pricing shown is an estimate. Final pricing is confirmed after review. Your appointment is confirmed only after the invoice is accepted and the deposit is received.</p>';
+      '<p class="calc-hint">Pricing shown is an estimate. We will call you to confirm the details and final pricing. Your appointment is confirmed only after the invoice is accepted and the deposit is received.</p>';
 
     var s = document.getElementById('bk-summary');
     if (s) s.value = [
@@ -220,6 +220,13 @@
       var btn = document.getElementById('bk-submit');
       if (!quote || !sel.date || !sel.time) {
         status.textContent = 'Please build an estimate and choose a date and arrival time first.';
+        status.className = 'form-status err'; return;
+      }
+      var bad = window.validateForm ? window.validateForm(form) : [];
+      if (bad.length) {
+        status.textContent = bad.length === 1
+          ? 'Please complete the highlighted field before sending.'
+          : 'Please complete the ' + bad.length + ' highlighted fields before sending.';
         status.className = 'form-status err'; return;
       }
       btn.disabled = true;

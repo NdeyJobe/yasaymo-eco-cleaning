@@ -368,3 +368,46 @@ textarea{min-height:118px;resize:vertical}
 .promo-strip strong{color:var(--charcoal);font-size:.98rem;display:block;margin-bottom:3px}
 .promo-strip span{font-size:.9rem;color:var(--slate)}
 .promo-strip .code{font-weight:700;letter-spacing:.1em;color:var(--green-deep)}
+
+/* Top bar with phone */
+.topbar{background:var(--charcoal);color:#C9CFC9;font-size:.8rem}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.tb-area{letter-spacing:.02em}
+.tb-tel{display:inline-flex;align-items:center;gap:7px;color:var(--ivory);font-weight:700;letter-spacing:.03em}
+.tb-tel:hover{color:#fff;text-decoration:none}
+.tb-tel svg{opacity:.85}
+@media(max-width:680px){
+  .topbar .wrap{justify-content:center}
+  .tb-area{display:none}
+}
+.foot-tel{color:var(--charcoal)!important;font-weight:700}
+
+/* Contact page call block */
+.call-block{
+  background:var(--sand-soft);border:1px solid var(--sand);border-left:3px solid var(--green);
+  border-radius:var(--radius);padding:26px 28px;margin-bottom:28px;max-width:780px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.cb-label{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:6px}
+.cb-num{display:block;font-family:'Marcellus',serif;font-size:1.9rem;color:var(--charcoal);line-height:1.1}
+.cb-num:hover{color:var(--green-deep);text-decoration:none}
+.cb-note{display:block;margin-top:8px;font-size:.84rem;color:var(--slate);max-width:440px}
+@media(max-width:620px){.call-block{padding:22px}.call-block .btn{width:100%}}
+
+/* Phone number */
+.nav-phone{
+  color:var(--green-deep);font-weight:700;font-size:.92rem;white-space:nowrap;letter-spacing:.01em;
+}
+.nav-phone:hover{color:var(--charcoal);text-decoration:none}
+@media(max-width:1040px){.nav-phone{padding:13px 0;width:100%;border-bottom:1px solid var(--sand)}}
+.footer-phone{color:var(--green-deep)!important;font-weight:700;font-size:1rem!important}
+.call-block{
+  background:var(--sand-soft);border:1px solid var(--sand);border-left:3px solid var(--green);
+  border-radius:var(--radius);padding:24px 26px;margin-bottom:26px;display:flex;flex-direction:column;gap:4px;
+}
+.call-eyebrow{font-size:.68rem;letter-spacing:.19em;text-transform:uppercase;color:var(--green);font-weight:700}
+.call-number{
+  font-family:'Marcellus',serif;font-size:1.9rem;color:var(--charcoal);line-height:1.2;
+}
+.call-number:hover{color:var(--green-deep);text-decoration:none}
+.call-note{font-size:.85rem;color:var(--slate);margin-top:4px;max-width:560px}

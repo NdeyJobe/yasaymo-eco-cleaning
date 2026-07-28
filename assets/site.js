@@ -42,6 +42,38 @@
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
   }
 
+
+  /* Validate required fields before any submission. Forms carry novalidate so
+     we control the messaging; this replaces the browser's default enforcement. */
+  window.validateForm = function (form) {
+    var bad = [];
+    form.querySelectorAll('[required]').forEach(function (f) {
+      var empty = (f.type === 'checkbox') ? !f.checked : !String(f.value || '').trim();
+      var badEmail = f.type === 'email' && f.value && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.value.trim());
+      if (empty || badEmail) {
+        bad.push(f);
+        f.setAttribute('aria-invalid', 'true');
+        f.style.borderColor = '#8C3B2E';
+      } else {
+        f.removeAttribute('aria-invalid');
+        f.style.borderColor = '';
+      }
+    });
+    if (bad.length) {
+      bad[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { bad[0].focus({ preventScroll: true }); } catch (e) {}
+    }
+    return bad;
+  };
+
+  /* Clear the error state as soon as the field is corrected */
+  document.addEventListener('input', function (e) {
+    if (e.target.hasAttribute && e.target.hasAttribute('aria-invalid')) {
+      e.target.removeAttribute('aria-invalid');
+      e.target.style.borderColor = '';
+    }
+  });
+
   /* Generic AJAX forms (contact, commercial). The booking form handles itself. */
   document.querySelectorAll('form[data-ajax]').forEach(function (form) {
     if (form.id === 'bookform') return;
@@ -49,6 +81,14 @@
       ev.preventDefault();
       var status = form.querySelector('.form-status');
       var btn = form.querySelector('button[type=submit]');
+      var bad = window.validateForm(form);
+      if (bad.length) {
+        status.textContent = bad.length === 1
+          ? 'Please complete the highlighted field before sending.'
+          : 'Please complete the ' + bad.length + ' highlighted fields before sending.';
+        status.className = 'form-status err';
+        return;
+      }
       btn.disabled = true;
       fetch(form.getAttribute('action'), {
         method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' }
@@ -81,7 +121,7 @@
       ['Preferred arrival', p.get('time')],
       ['Estimated total', p.get('total') ? '$' + p.get('total') : null],
       ['Estimated deposit', p.get('deposit') ? '$' + p.get('deposit') : null],
-      ['Confirmation sent to', p.get('email')]
+      ['Your email address', p.get('email')]
     ].filter(function (r) { return r[1]; });
     ok.innerHTML = rows.length
       ? '<h4>Your request</h4>' + rows.map(function (r) {
