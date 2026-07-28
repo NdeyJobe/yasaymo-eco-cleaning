@@ -99,7 +99,7 @@ const PRICING = {
     ]}
   ],
 
-  estimateUrl: '/pricing/'
+  estimateUrl: '/contact/'
 };
 
 /* =====================================================================
@@ -114,8 +114,31 @@ const PRICING = {
     service: 'standard', size: 's1',
     bedrooms: '2', fullBaths: '1', halfBaths: '0',
     frequency: 'onetime', condition: 'normal', pets: 'none',
-    addons: {}
+    addons: {},
+    promoInput: '',   // what is typed in the box
+    promoCode: null,  // the applied, validated code
+    promoError: ''    // message shown under the field
   };
+
+  /* Look up a promotion, case-insensitive and whitespace-tolerant */
+  function lookupPromo(raw) {
+    if (typeof PROMOTIONS === 'undefined') return null;
+    var key = String(raw || '').trim().toUpperCase().replace(/\s+/g, '');
+    if (!key) return null;
+    var p = PROMOTIONS[key];
+    if (!p || p.active === false) return null;
+    return { key: key, def: p };
+  }
+
+  /* Is the applied promo valid for the service currently being priced? */
+  function promoEligible(p, svcId) {
+    if (!p) return false;
+    var list = p.def.eligibleServices;
+    if (!list || !list.length) return true;
+    var norm = function (x) { return String(x).toLowerCase().replace(/[^a-z]/g, ''); };
+    for (var i = 0; i < list.length; i++) if (norm(list[i]) === norm(svcId)) return true;
+    return false;
+  }
 
   var money  = function (n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
   var money0 = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
@@ -168,7 +191,26 @@ const PRICING = {
     }
     var extras = petAdj + addonTotal;
 
-    var firstCore = Math.max(preDiscount, PRICING.minimumCharge);
+    // ---- promotion: first visit only, never stacked with recurring ----
+    var promo = null;
+    var pr = lookupPromo(state.promoCode);
+    if (pr && promoEligible(pr, svc)) {
+      var raw = preDiscount * (pr.def.discount / 100);
+      var capped = typeof pr.def.maximumDiscount === 'number'
+        ? Math.min(raw, pr.def.maximumDiscount) : raw;
+      promo = {
+        code: pr.key,
+        name: pr.def.name,
+        pct: pr.def.discount,
+        amount: capped,
+        capped: capped < raw,
+        max: pr.def.maximumDiscount,
+        disclaimer: pr.def.disclaimer || ''
+      };
+    }
+
+    var afterPromo = preDiscount - (promo ? promo.amount : 0);
+    var firstCore = Math.max(afterPromo, PRICING.minimumCharge);
 
     var freq = find(PRICING.frequency, state.frequency);
     var discount = preDiscount * freq.discount;
@@ -180,7 +222,10 @@ const PRICING = {
       base: base, roomLines: roomLines,
       discount: discount, discountPct: freq.discount,
       recurring: freq.discount > 0, freqLabel: freq.label,
-      minApplied: recurCore > afterDiscount, minimum: PRICING.minimumCharge,
+      promo: promo,
+      minAppliedFirst: firstCore > afterPromo,
+      minAppliedRecur: recurCore > afterDiscount,
+      minimum: PRICING.minimumCharge,
       petAdj: petAdj, addonLines: addonLines,
       firstTotal: firstCore + extras,
       recurTotal: recurCore + extras
@@ -234,7 +279,7 @@ const PRICING = {
       html += '<div class="addon-group"><h4>' + g.group + '</h4><div class="addon-list">';
       g.items.forEach(function (a) {
         var on = !!state.addons[a.id];
-        var price = money0(a.price) + (a.per === 'fullbath' ? ' <span class="per">per full bathroom</span>' : a.qty ? ' <span class="per">each</span>' : '');
+        var price = money0(a.price) + (a.per === 'fullbath' ? ' <span class="per">per full bathroom</span>' : a.qty ? ' <span class="per">per ' + a.unit + '</span>' : '');
         html += '<div class="addon' + (on ? ' on' : '') + '">' +
           '<label class="addon-main"><input type="checkbox" data-addon="' + a.id + '"' + (on ? ' checked' : '') + '>' +
           '<span class="addon-label">' + a.label + '</span><span class="addon-price">' + price + '</span></label>' +
@@ -247,6 +292,29 @@ const PRICING = {
       html += '</div></div>';
     });
     return html;
+  }
+
+  function promoHtml() {
+    var pr = lookupPromo(state.promoCode);
+    var applied = !!pr;
+    var eligible = applied && promoEligible(pr, effectiveService());
+    var html = '<div class="promo">';
+    html += '<div class="promo-row">' +
+      '<input type="text" id="promo-input" class="calc-select promo-input" placeholder="Enter code" ' +
+        'value="' + String(state.promoInput || '').replace(/"/g, '&quot;') + '" autocomplete="off" ' +
+        'aria-label="Promotional code" spellcheck="false">' +
+      '<button type="button" class="btn promo-btn" id="promo-apply">Apply</button>' +
+      (applied ? '<button type="button" class="promo-remove" id="promo-remove">Remove</button>' : '') +
+      '</div>';
+    if (applied && eligible) {
+      html += '<div class="promo-ok"><strong>' + pr.def.shortName + ' Offer Applied</strong>' +
+        '<span>' + pr.def.appliedMessage + '</span></div>';
+    } else if (applied && !eligible) {
+      html += '<div class="promo-err">This code does not apply to the selected service.</div>';
+    } else if (state.promoError) {
+      html += '<div class="promo-err">' + state.promoError + '</div>';
+    }
+    return html + '</div>';
   }
 
   /* ---------- render ---------- */
@@ -274,6 +342,7 @@ const PRICING = {
         step(7, 'Home condition', optionCards('condition', PRICING.condition, state.condition, { cls: 'opt-grid-3' })) +
         step(8, 'Pets', optionCards('pets', PRICING.pets, state.pets, { cls: 'opt-grid-3' })) +
         step(9, 'Add-on services', addonsHtml()) +
+        step(10, 'Promotional code', promoHtml()) +
       '</div><aside class="calc-summary-wrap"><div class="calc-summary" id="summary"></div></aside></div>' +
       '<div class="calc-bar" id="calcbar"></div>';
 
@@ -301,7 +370,9 @@ const PRICING = {
     var cond = find(PRICING.condition, state.condition);
     var pet  = find(PRICING.pets, state.pets);
 
-    var rows = sumRow('Service', svc.label + (r.upgraded ? ' <em>(required)</em>' : ''));
+    var rows = '';
+    if (r.promo) rows += sumRow('Promotion code', r.promo.code);
+    rows += sumRow('Service', svc.label + (r.upgraded ? ' <em>(required)</em>' : ''));
     rows += sumRow('Home size', size.label);
     rows += sumRow('Bedrooms', state.bedrooms);
     rows += sumRow('Bathrooms', state.fullBaths + ' full' + (num(state.halfBaths) ? ', ' + state.halfBaths + ' half' : ''));
@@ -311,8 +382,9 @@ const PRICING = {
 
     var lines = lineRow('Base price', money(r.base));
     r.roomLines.forEach(function (l) { lines += lineRow(l.label, '+' + money(l.amount)); });
-    if (r.recurring) lines += lineRow('Recurring savings (' + Math.round(r.discountPct * 100) + '%)', '−' + money(r.discount), 'save');
-    if (r.minApplied) lines += lineRow('Minimum visit charge applied', money(r.minimum));
+    if (r.promo) lines += lineRow('Promotion — first visit' + (r.promo.capped ? ' (max ' + money0(r.promo.max) + ')' : ''), '−' + money(r.promo.amount), 'save');
+    if (r.recurring) lines += lineRow('Recurring savings (' + Math.round(r.discountPct * 100) + '%) — from 2nd visit', '−' + money(r.discount), 'save');
+    if (r.minAppliedFirst || r.minAppliedRecur) lines += lineRow('Minimum visit charge applied', money(r.minimum));
     if (r.petAdj > 0) lines += lineRow('Pet adjustment', '+' + money(r.petAdj));
     if (r.addonLines.length) {
       lines += '<div class="sum-addons"><span class="sum-addons-h">Add-ons</span>';
@@ -328,8 +400,10 @@ const PRICING = {
     return '<div class="sum-block"><h3 class="sum-title">Residential Cleaning Estimate</h3>' +
       '<div class="sum-rows">' + rows + '</div><div class="sum-lines">' + lines + '</div>' + total +
       '<div class="sum-deposit">Estimated deposit today: <strong>' + money(r.firstTotal * 0.5) + '</strong> (50% of the first visit, due after we send your invoice).</div>' +
-      '<p class="sum-note">Pricing shown is an estimate. Final pricing is confirmed after reviewing your request.</p>' +
-      '<button type="button" class="btn sum-cta" id="cta">Continue to Booking</button></div>';
+      '<p class="sum-note">Pricing shown is an estimate. Final pricing is confirmed after reviewing your request.' +
+        (r.promo && r.promo.disclaimer ? ' ' + r.promo.disclaimer : '') + '</p>' +
+      '<button type="button" class="btn sum-cta" id="cta">' +
+        (bookingOpen ? 'Go to Booking' : 'Continue to Booking') + '</button></div>';
   }
   function sumRow(k, v) { return '<div class="sum-row"><span>' + k + '</span><span>' + v + '</span></div>'; }
   function lineRow(k, v, cls) { return '<div class="sum-line ' + (cls || '') + '"><span>' + k + '</span><span>' + v + '</span></div>'; }
@@ -345,24 +419,25 @@ const PRICING = {
       bar.innerHTML = '<div class="bar-in"><span class="bar-total"><small>' +
         (r.recurring ? 'First visit' : 'Estimated total') + '</small><strong>' + money(r.firstTotal) + '</strong>' +
         (r.recurring ? '<em>then ' + money(r.recurTotal) + '/visit</em>' : '') +
-        '</span><button type="button" class="btn" id="cta-bar">Continue to Booking</button></div>';
+        '</span><button type="button" class="btn" id="cta-bar">' +
+        (bookingOpen ? 'Go to Booking' : 'Continue to Booking') + '</button></div>';
     }
     var go = function () { submit(r); };
     var a = document.getElementById('cta');     if (a) a.onclick = go;
     var b = document.getElementById('cta-bar'); if (b) b.onclick = go;
+
+    pushQuote(r);   // keeps the booking review in sync after it is opened
   }
 
-  function submit(r) {
-    if (r.blocked) {
-      var el = document.getElementById('custom-request');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
+  var bookingOpen = false;
+
+  /* Build the quote object handed to the booking module */
+  function buildQuote(r) {
     var size = find(PRICING.sizes, state.size);
     var svc  = find(PRICING.services, r.svc);
     var cond = find(PRICING.condition, state.condition);
     var pet  = find(PRICING.pets, state.pets);
-    window.YASAYMO_QUOTE = {
+    return {
       service: svc.label,
       size: size.label,
       bedrooms: state.bedrooms,
@@ -374,8 +449,37 @@ const PRICING = {
       addons: r.addonLines.map(function (l) { return l.label; }).join(', ') || 'None',
       firstTotal: r.firstTotal,
       recurTotal: r.recurring ? r.recurTotal : null,
+      promoCode: r.promo ? r.promo.code : null,
+      promoName: r.promo ? r.promo.name : null,
+      promoAmount: r.promo ? r.promo.amount : 0,
       deposit: r.firstTotal * (window.SITE ? SITE.booking.depositPercent : 0.5)
     };
+  }
+
+  /* Keep the booking panel in sync with the calculator once it is open */
+  function pushQuote(r) {
+    if (!bookingOpen) return;
+    if (r.blocked) {
+      window.YASAYMO_QUOTE = null;
+      document.dispatchEvent(new CustomEvent('quote:invalid'));
+      var bl = document.getElementById('booking');
+      if (bl) bl.classList.add('locked');
+      return;
+    }
+    var bl2 = document.getElementById('booking');
+    if (bl2) bl2.classList.remove('locked');
+    window.YASAYMO_QUOTE = buildQuote(r);
+    document.dispatchEvent(new CustomEvent('quote:ready', { detail: window.YASAYMO_QUOTE }));
+  }
+
+  function submit(r) {
+    if (r.blocked) {
+      var el = document.getElementById('custom-request');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    bookingOpen = true;
+    window.YASAYMO_QUOTE = buildQuote(r);
     document.dispatchEvent(new CustomEvent('quote:ready', { detail: window.YASAYMO_QUOTE }));
     var b = document.getElementById('booking');
     if (b) { b.classList.remove('locked'); b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
@@ -407,7 +511,18 @@ const PRICING = {
       }
     });
 
+    // promo: keep typed value in state so re-renders don't lose it
+    root.addEventListener('input', function (e) {
+      if (e.target.id === 'promo-input') { state.promoInput = e.target.value; state.promoError = ''; }
+    });
+    // Enter key applies the code
+    root.addEventListener('keydown', function (e) {
+      if (e.target.id === 'promo-input' && e.key === 'Enter') { e.preventDefault(); applyPromo(); }
+    });
+
     root.addEventListener('click', function (e) {
+      if (e.target.closest('#promo-apply'))  { applyPromo();  return; }
+      if (e.target.closest('#promo-remove')) { removePromo(); return; }
       var b = e.target.closest('[data-qty]');
       if (!b) return;
       var id = b.dataset.qty;
@@ -416,6 +531,31 @@ const PRICING = {
       document.getElementById('qty-' + id).textContent = next;
       update();
     });
+  }
+
+  function applyPromo() {
+    var box = document.getElementById('promo-input');
+    var typed = box ? box.value : state.promoInput;
+    state.promoInput = typed;
+    var pr = lookupPromo(typed);
+    if (!pr) {
+      state.promoCode = null;
+      state.promoError = String(typed || '').trim()
+        ? 'That code is not valid or has expired.'
+        : 'Please enter a promotional code.';
+    } else {
+      state.promoCode = pr.key;
+      state.promoInput = pr.key;
+      state.promoError = '';
+    }
+    render();
+  }
+
+  function removePromo() {
+    state.promoCode = null;
+    state.promoInput = '';
+    state.promoError = '';
+    render();
   }
 
   function syncOn(name) {

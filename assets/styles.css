@@ -328,3 +328,99 @@ textarea{min-height:118px;resize:vertical}
   border-radius:var(--radius);padding:21px 24px;margin-bottom:10px}
 .price-range p{font-size:.94rem;color:var(--charcoal)}
 .price-range strong{font-family:'Marcellus',serif;font-weight:400;font-size:1.12rem}
+
+/* Promotional code field */
+.promo-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.promo-input{max-width:240px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.promo-input::placeholder{text-transform:none;letter-spacing:normal;font-weight:400;color:#9AA29B}
+.promo-btn{padding:13px 22px}
+.promo-remove{background:none;border:none;font-family:inherit;font-size:.85rem;color:var(--slate);text-decoration:underline;cursor:pointer;padding:0 4px}
+.promo-remove:hover{color:var(--charcoal)}
+.promo-ok{
+  margin-top:12px;padding:14px 16px;background:var(--sand-soft);border:1px solid var(--sage);
+  border-left:3px solid var(--green);border-radius:var(--radius);display:flex;flex-direction:column;gap:3px;
+}
+.promo-ok strong{font-size:.92rem;color:var(--green-deep)}
+.promo-ok span{font-size:.86rem;color:var(--slate)}
+.promo-err{margin-top:11px;font-size:.86rem;color:#8C3B2E;font-weight:600}
+
+/* Promotion banners */
+.promo-banner{
+  background:var(--charcoal);color:var(--ivory);border-radius:var(--radius);
+  padding:34px 38px;display:flex;gap:28px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+}
+.promo-banner h3{color:var(--ivory);font-size:1.5rem;margin-bottom:8px}
+.promo-banner p{color:#C9CFC9;font-size:.96rem;margin:0}
+.promo-banner .code{
+  display:inline-block;font-family:'Mulish',sans-serif;font-weight:700;letter-spacing:.14em;
+  background:var(--sage);color:#1B241F;padding:3px 11px;border-radius:2px;margin-left:4px;
+}
+.promo-banner .fine{display:block;margin-top:12px;font-size:.76rem;color:#9FA79F;max-width:620px}
+.promo-banner .btn{background:var(--sage);border-color:var(--sage);color:#1B241F;white-space:nowrap}
+.promo-banner .btn:hover{background:#A2B4A8;border-color:#A2B4A8;color:#1B241F}
+@media(max-width:720px){.promo-banner{padding:26px 22px;gap:18px}.promo-banner .btn{width:100%}}
+
+/* Slim promo strip above the calculator */
+.promo-strip{
+  background:var(--sand-soft);border:1px solid var(--sage);border-left:3px solid var(--green);
+  border-radius:var(--radius);padding:18px 22px;margin-bottom:14px;
+}
+.promo-strip strong{color:var(--charcoal);font-size:.98rem;display:block;margin-bottom:3px}
+.promo-strip span{font-size:.9rem;color:var(--slate)}
+.promo-strip .code{font-weight:700;letter-spacing:.1em;color:var(--green-deep)}
+
+/* Top bar with phone */
+.topbar{background:var(--charcoal);color:#C9CFC9;font-size:.8rem}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:8px;padding-bottom:8px}
+.tb-area{letter-spacing:.02em}
+.tb-tel{display:inline-flex;align-items:center;gap:7px;color:var(--ivory);font-weight:700;letter-spacing:.03em}
+.tb-tel:hover{color:#fff;text-decoration:none}
+.tb-tel svg{opacity:.85}
+@media(max-width:680px){
+  .topbar .wrap{justify-content:center}
+  .tb-area{display:none}
+}
+.foot-tel{color:var(--charcoal)!important;font-weight:700}
+
+/* Contact page call block */
+.call-block{
+  background:var(--sand-soft);border:1px solid var(--sand);border-left:3px solid var(--green);
+  border-radius:var(--radius);padding:26px 28px;margin-bottom:28px;max-width:780px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.cb-label{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:6px}
+.cb-num{display:block;font-family:'Marcellus',serif;font-size:1.9rem;color:var(--charcoal);line-height:1.1}
+.cb-num:hover{color:var(--green-deep);text-decoration:none}
+.cb-note{display:block;margin-top:8px;font-size:.84rem;color:var(--slate);max-width:440px}
+@media(max-width:620px){.call-block{padding:22px}.call-block .btn{width:100%}}
+
+/* Phone number */
+.nav-phone{
+  color:var(--green-deep);font-weight:700;font-size:.92rem;white-space:nowrap;letter-spacing:.01em;
+}
+.nav-phone:hover{color:var(--charcoal);text-decoration:none}
+@media(max-width:1040px){.nav-phone{padding:13px 0;width:100%;border-bottom:1px solid var(--sand)}}
+.footer-phone{color:var(--green-deep)!important;font-weight:700;font-size:1rem!important}
+.call-block{
+  background:var(--sand-soft);border:1px solid var(--sand);border-left:3px solid var(--green);
+  border-radius:var(--radius);padding:24px 26px;margin-bottom:26px;display:flex;flex-direction:column;gap:4px;
+}
+.call-eyebrow{font-size:.68rem;letter-spacing:.19em;text-transform:uppercase;color:var(--green);font-weight:700}
+.call-number{
+  font-family:'Marcellus',serif;font-size:1.9rem;color:var(--charcoal);line-height:1.2;
+}
+.call-number:hover{color:var(--green-deep);text-decoration:none}
+.call-note{font-size:.85rem;color:var(--slate);margin-top:4px;max-width:560px}
+
+/* Top utility bar */
+.topbar{background:var(--charcoal);color:var(--ivory);font-size:.82rem}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:9px;padding-bottom:9px}
+.tb-area{color:#C9CFC9;letter-spacing:.01em}
+.tb-phone{color:var(--ivory);font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:7px;letter-spacing:.02em}
+.tb-phone:hover{color:var(--sage);text-decoration:none}
+.tb-ico{color:var(--sage);font-size:.95rem}
+@media(max-width:620px){
+  .topbar .wrap{justify-content:center;padding-top:8px;padding-bottom:8px}
+  .tb-area{display:none}
+}
+.call-btn{align-self:flex-start;margin-top:14px}

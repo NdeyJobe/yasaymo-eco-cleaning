@@ -54,13 +54,16 @@
             '<input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
             '<input type="hidden" name="_subject" id="bk-subject" value="' + SITE.subjects.booking + '">' +
             '<input type="hidden" name="quote_summary" id="bk-summary">' +
+            '<input type="hidden" name="promotion_code" id="bk-promo-code">' +
+            '<input type="hidden" name="promotion_name" id="bk-promo-name">' +
+            '<input type="hidden" name="promotion_discount" id="bk-promo-amount">' +
             '<fieldset><legend>Contact</legend>' +
               '<div class="field-row">' +
                 '<div><label for="bk-name">Full name</label><input type="text" id="bk-name" name="name" required autocomplete="name"></div>' +
                 '<div><label for="bk-email">Email</label><input type="email" id="bk-email" name="email" required autocomplete="email"></div>' +
               '</div>' +
               '<div class="field-row">' +
-                '<div><label for="bk-phone">Phone</label><input type="tel" id="bk-phone" name="phone" autocomplete="tel"></div>' +
+                '<div><label for="bk-phone">Phone</label><input type="tel" id="bk-phone" name="phone" required autocomplete="tel"></div>' +
                 '<div><label for="bk-contact">Preferred contact</label><select id="bk-contact" name="preferred_contact"><option>Email</option><option>Phone</option><option>Text</option></select></div>' +
               '</div>' +
               '<label for="bk-address">Service address</label><input type="text" id="bk-address" name="service_address" required>' +
@@ -130,9 +133,18 @@
   function drawReview() {
     var r = document.getElementById('review');
     if (!r) return;
-    if (!quote) { r.innerHTML = '<h4>Review</h4><p style="font-size:.89rem">Build your estimate above, then choose a date to complete your request.</p>'; return; }
+    if (!quote) {
+      r.innerHTML = '<h4>Review</h4><p style="font-size:.89rem">Build your estimate above, then choose a date to complete your request. ' +
+        'Homes over 4,000 sq ft and properties needing an assessment are quoted after a walkthrough — ' +
+        '<a href="/contact/">contact us</a> and we will arrange one.</p>';
+      var btn0 = document.getElementById('bk-submit');
+      if (btn0) btn0.disabled = true;
+      return;
+    }
 
     var rows =
+      (quote.promoCode ? row('Promotion code', quote.promoCode) : '') +
+      (quote.promoName ? row('Promotion', quote.promoName) : '') +
       row('Service', quote.service) +
       row('Home size', quote.size) +
       row('Bedrooms / bathrooms', quote.bedrooms + ' bd, ' + quote.fullBaths + ' full' + (+quote.halfBaths ? ', ' + quote.halfBaths + ' half' : '')) +
@@ -143,12 +155,13 @@
       row('Requested date', prettyDate(sel.date)) +
       row('Preferred arrival', sel.time || '—');
 
-    var totals = '<div class="r-row r-total"><span>Estimated first visit</span><span>' + money(quote.firstTotal) + '</span></div>' +
+    var totals = (quote.promoAmount ? '<div class="r-row"><span>Promotion discount</span><span>−' + money(quote.promoAmount) + '</span></div>' : '') +
+      '<div class="r-row r-total"><span>Estimated first visit</span><span>' + money(quote.firstTotal) + '</span></div>' +
       (quote.recurTotal ? '<div class="r-row"><span>Then per visit</span><span>' + money(quote.recurTotal) + '</span></div>' : '') +
       '<div class="r-row"><span>Estimated deposit (50%)</span><span>' + money(quote.deposit) + '</span></div>';
 
     r.innerHTML = '<h4>Review your request</h4>' + rows + totals +
-      '<p class="calc-hint">Pricing shown is an estimate. Final pricing is confirmed after review. Your appointment is confirmed only after the invoice is accepted and the deposit is received.</p>';
+      '<p class="calc-hint">Pricing shown is an estimate. We will call you to confirm the details and final pricing. Your appointment is confirmed only after the invoice is accepted and the deposit is received.</p>';
 
     var s = document.getElementById('bk-summary');
     if (s) s.value = [
@@ -160,15 +173,25 @@
       'Condition: ' + quote.condition,
       'Pets: ' + quote.pets,
       'Add-ons: ' + quote.addons,
+      quote.promoCode ? 'Promotion code: ' + quote.promoCode : 'Promotion code: none',
+      quote.promoName ? 'Promotion: ' + quote.promoName + ' (−' + money(quote.promoAmount) + ')' : '',
       'Requested date: ' + prettyDate(sel.date),
       'Preferred arrival: ' + (sel.time || '—'),
       'Estimated first visit: ' + money(quote.firstTotal),
       quote.recurTotal ? 'Then per visit: ' + money(quote.recurTotal) : 'One-time service',
       'Estimated deposit (50%): ' + money(quote.deposit)
-    ].join('\n');
+    ].filter(function (x) { return x; }).join('\n');
 
     var subj = document.getElementById('bk-subject');
-    if (subj) subj.value = SITE.subjects.booking + ' — ' + prettyDate(sel.date);
+    if (subj) subj.value = SITE.subjects.booking + ' — ' + prettyDate(sel.date) +
+      (quote.promoCode ? ' — ' + quote.promoCode : '');
+
+    var pc = document.getElementById('bk-promo-code');
+    var pn = document.getElementById('bk-promo-name');
+    var pa = document.getElementById('bk-promo-amount');
+    if (pc) pc.value = quote.promoCode || '';
+    if (pn) pn.value = quote.promoName || '';
+    if (pa) pa.value = quote.promoAmount ? quote.promoAmount.toFixed(2) : '';
 
     checkReady();
   }
@@ -199,6 +222,13 @@
         status.textContent = 'Please build an estimate and choose a date and arrival time first.';
         status.className = 'form-status err'; return;
       }
+      var bad = window.validateForm ? window.validateForm(form) : [];
+      if (bad.length) {
+        status.textContent = bad.length === 1
+          ? 'Please complete the highlighted field before sending.'
+          : 'Please complete the ' + bad.length + ' highlighted fields before sending.';
+        status.className = 'form-status err'; return;
+      }
       btn.disabled = true;
       fetch(form.getAttribute('action'), {
         method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' }
@@ -207,7 +237,9 @@
         var q = new URLSearchParams({
           service: quote.service, date: prettyDate(sel.date), time: sel.time,
           total: quote.firstTotal.toFixed(2), deposit: quote.deposit.toFixed(2),
-          email: document.getElementById('bk-email').value
+          email: document.getElementById('bk-email').value,
+          promo: quote.promoCode || '', promoName: quote.promoName || '',
+          promoAmount: quote.promoAmount ? quote.promoAmount.toFixed(2) : ''
         });
         window.location.href = B.successUrl + '?' + q.toString();
       }).catch(function () {
@@ -219,6 +251,11 @@
   }
 
   document.addEventListener('quote:ready', function (e) { quote = e.detail; drawReview(); });
+
+  document.addEventListener('quote:invalid', function () {
+    quote = null;
+    drawReview();
+  });
 
   render();
 })();

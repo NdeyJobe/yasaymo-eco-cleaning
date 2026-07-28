@@ -43,15 +43,20 @@ requests pending deposit, a duplicate request is resolvable when you review it.
 
 ## Domain change (pending)
 Canonical URLs, `og:url`, `sitemap.xml`, `robots.txt` and `CNAME` currently point to
-`whitegloveprofessionalcleaning.com`. When the new domain is connected:
+`yasaymo.com`. When the new domain is connected:
 1. Update `SITE.domain` in `assets/config.js`
 2. Find-and-replace the old domain across the repo (it appears in each page `<head>`, sitemap, robots, CNAME)
 3. Point DNS at GitHub Pages, set the custom domain in Settings → Pages, re-tick Enforce HTTPS
 4. On the old domain, replace its DNS records with a single 301 URL Redirect to the new one
 
+## Brand assets
+`favicon.svg` (primary), `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`,
+`apple-touch-icon.png` (180px), `og-image.png` (1200x630 social share card).
+All generated from the Marcellus wordmark in brand colours — regenerate if the logo changes.
+
 ## Before public launch
 - [ ] Business email/phone published on Contact (currently form-only)
-- [ ] Formspree recipient switched from the current inbox to a Yasaymo address
+- [ ] Formspree recipient switched to a dedicated Yasaymo inbox (set in the Formspree dashboard, not in this repo)
 - [ ] Privacy / Terms "Last updated" dates set and reviewed
 - [ ] Insurance bound before the first job (site makes no insured/bonded claim — do not add one until true)
 - [ ] Worker classification decision documented
